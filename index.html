@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Día con DiDi · Votación del Jurado</title>
+
+<style>
+/* ── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --orange: #FF6C00;
+  --orange-hover: #E56200;
+  --orange-glow: rgba(255, 108, 0, .10);
+  --dark: #141422;
+  --dark2: #1E1E32;
+  --white: #FFFFFF;
+  --bg: #F4F4F8;
+  --text: #1A1A2E;
+  --muted: #71718A;
+  --border: #DFDFE8;
+  --card: #FFFFFF;
+  --green: #16A34A;
+  --green-bg: rgba(22, 163, 74, .10);
+  --gold: #D97706;
+  --gold-bg: #FEF3C7;
+  --silver: #64748B;
+  --silver-bg: #F1F5F9;
+  --bronze: #B45309;
+  --radius: 12px;
+  --shadow: 0 1px 4px rgba(0,0,0,.06);
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
+}
+
+/* ── RESET ──────────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+a { color: inherit; text-decoration: none; }
+
+/* ── HEADER ─────────────────────────────────────────────── */
+.header {
+  background: linear-gradient(145deg, var(--dark), var(--dark2));
+  padding: 32px 20px 24px;
+  text-align: center;
+  position: relative;
+}
+.header-brand {
+  font-size: 13px; font-weight: 700; color: var(--orange);
+  letter-spacing: .4px; margin-bottom: 4px;
+}
+.header-logo { height: 28px; margin-bottom: 8px; }
+.header h1 { font-size: 20px; font-weight: 800; color: var(--white); line-height: 1.3; }
+.header h1 em { font-style: normal; color: var(--orange); }
+.header-sub { font-size: 12px; color: rgba(255,255,255,.4); margin-top: 6px; }
+
+/* ── JUROR BAR ──────────────────────────────────────────── */
+.juror-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--card); border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  position: sticky; top: 0; z-index: 50;
+  box-shadow: var(--shadow);
+}
+.juror-dot {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-weight: 700; font-size: 14px; color: var(--white); flex-shrink: 0;
+}
+.juror-bar-name { font-weight: 600; font-size: 14px; flex: 1; }
+.badge {
+  font-size: 11px; font-weight: 700; padding: 2px 10px;
+  border-radius: 20px;
+}
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-orange { background: var(--orange-glow); color: var(--orange); }
+.btn-link {
+  font-size: 12px; font-weight: 600; color: var(--muted);
+}
+
+/* ── PROGRESS ───────────────────────────────────────────── */
+.progress { padding: 10px 16px; background: var(--card); border-bottom: 1px solid var(--border); }
+.progress-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+.progress-track { height: 5px; background: var(--border); border-radius: 3px; }
+.progress-fill { height: 100%; background: var(--orange); border-radius: 3px; transition: width .3s; }
+
+/* ── TABS ───────────────────────────────────────────────── */
+.tabs {
+  display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  background: var(--card); border-bottom: 1px solid var(--border);
+}
+.tab {
+  padding: 12px 16px; font-size: 13px; font-weight: 600;
+  color: var(--muted); white-space: nowrap;
+  border-bottom: 3px solid transparent;
+  transition: color .15s, border-color .15s;
+}
+.tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+
+/* ── MAIN CONTENT ───────────────────────────────────────── */
+.content { padding: 16px; max-width: 640px; margin: 0 auto; }
+.city-tag {
+  font-size: 12px; font-weight: 700; color: var(--orange);
+  text-transform: uppercase; letter-spacing: .7px; margin-bottom: 12px;
+}
+
+/* ── VIDEO CARD ─────────────────────────────────────────── */
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px;
+  margin-bottom: 12px; box-shadow: var(--shadow);
+}
+.card.is-done { border-left: 4px solid var(--green); }
+.card-top { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
+.card-num {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--orange-glow); color: var(--orange);
+  display: grid; place-items: center;
+  font-weight: 800; font-size: 14px; flex-shrink: 0;
+}
+.card-user { font-size: 15px; font-weight: 700; }
+.card-note { font-size: 12px; color: var(--muted); }
+.card-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.tiktok-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--dark); color: var(--white);
+  font-size: 12px; font-weight: 600;
+  padding: 5px 12px; border-radius: 8px;
+  transition: background .15s;
+}
+.tiktok-btn:hover { background: var(--orange); }
+.tiktok-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+/* ── RATING ROW ─────────────────────────────────────────── */
+.criteria { display: flex; flex-direction: column; gap: 12px; }
+.crit-row {}
+.crit-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.crit-name { font-size: 13px; font-weight: 600; }
+.crit-meta { font-size: 11px; color: var(--muted); }
+.crit-val { font-size: 13px; font-weight: 700; color: var(--orange); margin-left: 4px; }
+.dots { display: flex; gap: 3px; }
+.dot {
+  flex: 1; height: 32px; border: 2px solid var(--border); border-radius: 6px;
+  font-size: 12px; font-weight: 600; color: var(--text);
+  display: grid; place-items: center; transition: all .12s;
+}
+.dot:active { transform: scale(.92); }
+.dot.on { background: var(--orange); border-color: var(--orange); color: var(--white); }
+
+/* ── SCORE ──────────────────────────────────────────────── */
+.score-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);
+}
+.score-label { font-size: 12px; color: var(--muted); }
+.saved-tag { font-size: 11px; color: var(--green); font-weight: 700; margin-top: 2px; }
+.score-num { font-size: 22px; font-weight: 800; color: var(--orange); }
+
+/* ── LOGIN ──────────────────────────────────────────────── */
+.login {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; min-height: 65vh;
+  padding: 40px 20px; text-align: center;
+}
+.login h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.login p { font-size: 14px; color: var(--muted); margin-bottom: 24px; max-width: 300px; }
+.login-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; max-width: 340px; }
+.login-btn {
+  background: var(--card); border: 2px solid var(--border); border-radius: var(--radius);
+  padding: 14px 8px; font-size: 14px; font-weight: 600; color: var(--text);
+  transition: all .15s;
+}
+.login-btn:active { transform: scale(.96); }
+.login-btn:hover { border-color: var(--orange); background: var(--orange-glow); }
+
+/* ── RANKINGS ───────────────────────────────────────────── */
+.rank-section { margin-bottom: 28px; }
+.rank-title { font-size: 17px; font-weight: 700; margin-bottom: 2px; }
+.rank-sub { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+.rank-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 14px;
+  margin-bottom: 8px; box-shadow: var(--shadow);
+}
+.rank-row.top { border-left: 4px solid; }
+.rank-row.p1 { border-left-color: var(--gold); }
+.rank-row.p2 { border-left-color: var(--silver); }
+.rank-row.p3 { border-left-color: var(--bronze); }
+.rank-pos {
+  width: 28px; height: 28px; border-radius: 7px;
+  display: grid; place-items: center;
+  font-weight: 800; font-size: 13px; flex-shrink: 0;
+}
+.p1 .rank-pos { background: var(--gold-bg); color: var(--gold); }
+.p2 .rank-pos { background: var(--silver-bg); color: var(--silver); }
+.p3 .rank-pos { background: var(--gold-bg); color: var(--bronze); }
+.rank-row:not(.top) .rank-pos { background: var(--orange-glow); color: var(--muted); }
+.rank-info { flex: 1; min-width: 0; }
+.rank-name { font-size: 14px; font-weight: 700; }
+.rank-detail { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.rank-right { text-align: right; flex-shrink: 0; }
+.rank-score { font-size: 17px; font-weight: 800; color: var(--orange); }
+.rank-count { font-size: 11px; color: var(--muted); }
+.rank-prize { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 5px; margin-top: 2px; display: inline-block; }
+.p1 .rank-prize { background: var(--gold-bg); color: var(--gold); }
+.p2 .rank-prize { background: var(--silver-bg); color: var(--silver); }
+.p3 .rank-prize { background: var(--gold-bg); color: var(--bronze); }
+.rank-row:not(.top) .rank-prize { background: var(--orange-glow); color: var(--orange); }
+.rank-empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
+
+.jv-detail { margin-top: 8px; }
+.jv-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); padding: 2px 0; }
+.jv-who { font-weight: 600; min-width: 70px; color: var(--text); }
+.jv-nums { flex: 1; }
+.jv-total { font-weight: 700; color: var(--orange); }
+
+/* ── GUIDE ──────────────────────────────────────────────── */
+.guide { padding-bottom: 20px; }
+.g-block { margin-bottom: 24px; }
+.g-num {
+  display: inline-grid; place-items: center;
+  width: 24px; height: 24px; border-radius: 6px;
+  background: var(--orange); color: var(--white);
+  font-size: 12px; font-weight: 800; margin-bottom: 6px;
+}
+.g-heading { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.g-text { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.g-cards { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.g-card {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 12px; font-size: 14px;
+}
+.g-card-icon { font-size: 20px; flex-shrink: 0; }
+.g-crit {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 12px; margin-top: 6px;
+}
+.g-crit-top { display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-bottom: 3px; }
+.g-weight { background: var(--orange-glow); color: var(--orange); font-weight: 700; font-size: 11px; padding: 1px 7px; border-radius: 5px; }
+.g-crit-desc { font-size: 13px; color: var(--muted); }
+.g-example {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px; margin-top: 8px;
+  font-size: 14px; line-height: 1.9;
+}
+.g-example-tag { font-size: 11px; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px; }
+.g-steps { display: flex; flex-direction: column; gap: 8px; }
+.g-step {
+  display: flex; gap: 10px; align-items: flex-start;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px;
+}
+.g-step-icon { font-size: 20px; flex-shrink: 0; }
+.g-step-desc { font-size: 13px; color: var(--muted); margin-top: 2px; line-height: 1.5; }
+.g-tip { font-size: 14px; color: var(--muted); display: flex; gap: 6px; padding: 3px 0; }
+.g-cta {
+  display: block; width: 100%; max-width: 280px; margin: 0 auto;
+  background: var(--orange); color: var(--white);
+  border-radius: 10px; padding: 14px; text-align: center;
+  font-size: 15px; font-weight: 700; transition: background .15s;
+}
+.g-cta:hover { background: var(--orange-hover); }
+
+/* ── EXPORT / IMPORT ────────────────────────────────────── */
+.export-section { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+.export-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.export-desc { font-size: 13px; color: var(--muted); margin-bottom: 10px; line-height: 1.5; }
+.export-btn {
+  display: block; width: 100%; padding: 12px;
+  background: var(--dark); color: var(--white);
+  border-radius: 10px; font-size: 14px; font-weight: 700; text-align: center;
+  transition: background .15s; margin-bottom: 8px;
+}
+.export-btn:hover { background: var(--orange); }
+.import-area {
+  width: 100%; min-height: 80px; padding: 10px;
+  border: 2px dashed var(--border); border-radius: 10px;
+  font-family: var(--font); font-size: 13px; color: var(--text);
+  resize: vertical; background: var(--bg);
+}
+.import-area:focus { border-color: var(--orange); outline: none; }
+.btn-orange {
+  display: block; width: 100%; padding: 12px; margin-top: 8px;
+  background: var(--orange); color: var(--white);
+  border-radius: 10px; font-size: 14px; font-weight: 700; text-align: center;
+}
+
+/* ── TOAST ───────────────────────────────────────────────── */
+.toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: var(--dark); color: var(--white);
+  padding: 10px 20px; border-radius: 10px;
+  font-size: 13px; font-weight: 600;
+  box-shadow: 0 4px 16px rgba(0,0,0,.25);
+  opacity: 0; transition: opacity .25s;
+  z-index: 200; pointer-events: none;
+  max-width: 90vw; text-align: center;
+}
+.toast.on { opacity: 1; }
+
+/* ── MISC ───────────────────────────────────────────────── */
+.loader { display: grid; place-items: center; min-height: 50vh; }
+.spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--border); border-top-color: var(--orange);
+  border-radius: 50%; animation: spin .6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ─────────────────────────────────────────────── -->
+<header class="header">
+  <!-- Replace with <img class="header-logo" src="images/logo-didi.png" alt="DiDi"> -->
+  <div class="header-brand">DiDi Repartidor</div>
+  <h1>Votación del Jurado<br><em>#MiDiaConDiDi</em></h1>
+  <div class="header-sub">Ciclo 1 · Mérida &amp; Aguascalientes</div>
+</header>
+
+<div id="root"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   DATA
+   ═══════════════════════════════════════════════════════════ */
+var JURORS  = ['Mon','Patrick','Joni','Marco','Diego','Sofía','Andrés Quihui'];
+var COLORS  = ['#FF6C00','#3B82F6','#8B5CF6','#EC4899','#10B981','#F59E0B','#EF4444'];
+var CRITERIA = [
+  { key:'originalidad',    label:'Originalidad',    w:0.4 },
+  { key:'mensajePositivo', label:'Mensaje Positivo', w:0.4 },
+  { key:'calidadVisual',   label:'Calidad Visual',  w:0.2 }
+];
+var CITIES = {
+  merida:{
+    name:'Mérida',
+    videos:[
+      {id:'m1',user:'@zerocklasse',links:[
+        {t:'Video',u:'https://www.tiktok.com/@zerocklasse/video/7675437382581259541'},
+        {t:'Var 2',u:'https://www.tiktok.com/@zerocklasse/video/7681754781886582037'}]},
+      {id:'m2',user:'@el_yukarepartidor',links:[
+        {t:'Video',u:'https://www.tiktok.com/@el_yukarepartidor/video/7679126514281057557'}]},
+      {id:'m3',user:'@arnoldramosv',links:[
+        {t:'Video',u:'https://www.tiktok.com/@arnoldramosv/video/7680735654178786580'}]},
+      {id:'m4',user:'@caloiisi',links:[
+        {t:'Video',u:'https://www.tiktok.com/@caloiisi/video/7682106443968810248'},
+        {t:'Var 2',u:'https://www.tiktok.com/@caloiisi/video/7683298867772755207'}]},
+      {id:'m5',user:'@marcosescamilla50',links:[
+        {t:'Video',u:'https://www.tiktok.com/@marcosescamilla50/video/7684435846547672336'}]},
+      {id:'m6',user:'@oscar.escobedo625',links:[
+        {t:'Video',u:'https://www.tiktok.com/@oscar.escobedo625/video/7677769131977919761'}]},
+      {id:'m7',user:'@pakomora7',links:[
+        {t:'Video',u:'https://www.tiktok.com/@pakomora7/video/7680938488908221717'}]}
+    ]
+  },
+  aguascalientes:{
+    name:'Aguascalientes',
+    videos:[
+      {id:'a1',user:'@luisgarcia6484',links:[
+        {t:'Video',u:'https://www.tiktok.com/@luisgarcia6484/video/7680651819541974290'},
+        {t:'Var 2',u:'https://www.tiktok.com/@luisgarcia6484/video/7680652498453007623'},
+        {t:'Var 3',u:'https://www.tiktok.com/@luisgarcia6484/video/7680654210500660498'}]},
+      {id:'a2',user:'@fabian.r43',links:[
+        {t:'Video',u:'https://www.tiktok.com/@fabian.r43/video/7680804402139188501'},
+        {t:'Var 2',u:'https://www.tiktok.com/@fabian.r43/video/7681133599151656213'}]},
+      {id:'a3',user:'@ricardotorres5073',links:[
+        {t:'Video',u:'https://www.tiktok.com/@ricardotorres5073/video/7680995441525132552'},
+        {t:'Var 2',u:'https://www.tiktok.com/@ricardotorres5073/video/7681352979252808968'},
+        {t:'Var 3',u:'https://www.tiktok.com/@ricardotorres5073/video/7682638839386557703'}]},
+      {id:'a4',user:'@georgyvega0',links:[
+        {t:'Video',u:'https://www.tiktok.com/@georgyvega0/video/7682218740527779092'}]},
+      {id:'a5',user:'@el210v',links:[
+        {t:'Video',u:'https://www.tiktok.com/@el210v/video/7683070506370780437'},
+        {t:'Var 2',u:'https://www.tiktok.com/@el210v/video/7683861381569006869'}]},
+      {id:'a6',user:'@chenchoglez123',links:[
+        {t:'Video',u:'https://www.tiktok.com/@chenchoglez123/video/7683366450962205983'}]},
+      {id:'a7',user:'@jsirius201',links:[
+        {t:'Video',u:'https://www.tiktok.com/@jsirius201/video/7683593157900012821'}]},
+      {id:'a8',user:'@98geordie',note:'TEL',links:[
+        {t:'Video',u:'https://www.tiktok.com/@98geordie/video/7684885468881669394'}]},
+      {id:'a9',user:'@rutadelmichi',links:[
+        {t:'Video',u:'https://www.tiktok.com/@rutadelmichi/video/7686318698117860628'}]}
+    ]
+  }
+};
+var PRIZES = {1:'🏍️ Moto',2:'📱 Celular',3:'📱 Celular'};
+
+/* ═══════════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════════ */
+var me     = null;   // current juror name
+var tab    = 'guia'; // active tab
+var votes  = {};     // { videoId: {originalidad:N, mensajePositivo:N, calidadVisual:N} }
+var imported = {};   // { jurorName: { videoId: {...}, ... }, ... }  — imported from other jurors
+
+var root  = document.getElementById('root');
+var $toast = document.getElementById('toast');
+var TIKTOK = '<svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.88 2.89 2.89 0 012.89-2.89c.28 0 .55.04.81.11v-3.51a6.27 6.27 0 00-.81-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V9.11a8.16 8.16 0 004.76 1.53v-3.45a4.84 4.84 0 01-1-.5z"/></svg>';
+
+/* ═══════════════════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════════════════ */
+function lsKey(j){ return 'didi_v_'+j.replace(/\s+/g,'_'); }
+function toast(m){ $toast.textContent=m; $toast.classList.add('on'); setTimeout(function(){$toast.classList.remove('on')},2200); }
+function score(v){
+  if(!v||v.originalidad==null||v.mensajePositivo==null||v.calidadVisual==null) return null;
+  return v.originalidad*.4 + v.mensajePositivo*.4 + v.calidadVisual*.2;
+}
+function allVideos(){ return CITIES.merida.videos.concat(CITIES.aguascalientes.videos); }
+function save(){
+  try{ localStorage.setItem(lsKey(me), JSON.stringify(votes)); }catch(e){}
+}
+function load(){
+  votes={};
+  try{var s=localStorage.getItem(lsKey(me)); if(s) votes=JSON.parse(s);}catch(e){}
+}
+function loadImported(){
+  imported={};
+  try{var s=localStorage.getItem('didi_imported'); if(s) imported=JSON.parse(s);}catch(e){}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER: LOGIN
+   ═══════════════════════════════════════════════════════════ */
+function showLogin(){
+  root.innerHTML =
+    '<div class="login">'+
+      '<h2>Selecciona tu nombre</h2>'+
+      '<p>Identifícate como miembro del jurado para empezar a votar.</p>'+
+      '<div class="login-grid">'+
+        JURORS.map(function(j,i){
+          return '<button class="login-btn" data-j="'+j+'" style="border-color:'+COLORS[i]+'22">'+j+'</button>';
+        }).join('')+
+      '</div>'+
+    '</div>';
+  root.querySelectorAll('.login-btn').forEach(function(b){
+    b.onclick=function(){ pickJuror(b.dataset.j); };
+  });
+}
+
+function pickJuror(name){
+  me=name;
+  try{localStorage.setItem('didi_juror',name);}catch(e){}
+  load(); loadImported();
+  tab='guia';
+  render();
+  toast(name.split(' ')[0]+' — listo para votar');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER: APP SHELL
+   ═══════════════════════════════════════════════════════════ */
+function render(){
+  var ci = JURORS.indexOf(me);
+  var col = COLORS[ci]||'#FF6C00';
+  var init = me.charAt(0);
+  var vids = allVideos();
+  var done = vids.filter(function(v){return votes[v.id]&&score(votes[v.id])!==null;}).length;
+  var pct  = Math.round(done/vids.length*100);
+
+  root.innerHTML =
+    '<div class="juror-bar">'+
+      '<div class="juror-dot" style="background:'+col+'">'+init+'</div>'+
+      '<span class="juror-bar-name">'+me+'</span>'+
+      '<span class="badge badge-orange">Jurado</span>'+
+      '<button class="btn-link" id="btn-logout">Cambiar</button>'+
+    '</div>'+
+    '<div class="progress">'+
+      '<div class="progress-label">'+done+' de '+vids.length+' evaluados ('+pct+'%)</div>'+
+      '<div class="progress-track"><div class="progress-fill" style="width:'+pct+'%"></div></div>'+
+    '</div>'+
+    '<div class="tabs" id="tabs">'+
+      tabBtn('guia','📋 Guía')+
+      tabBtn('merida','Mérida')+
+      tabBtn('aguascalientes','Aguascalientes')+
+      tabBtn('rankings','Rankings')+
+      tabBtn('sync','Compartir')+
+    '</div>'+
+    '<div class="content" id="pane"></div>';
+
+  document.getElementById('btn-logout').onclick=function(){
+    me=null; try{localStorage.removeItem('didi_juror');}catch(e){} votes={}; showLogin();
+  };
+  document.getElementById('tabs').onclick=function(e){
+    var t=e.target.closest('.tab'); if(!t) return;
+    tab=t.dataset.t; render();
+  };
+
+  if(tab==='guia') showGuide();
+  else if(tab==='rankings') showRankings();
+  else if(tab==='sync') showSync();
+  else showCity(tab);
+}
+
+function tabBtn(key,label){
+  return '<button class="tab'+(tab===key?' active':'')+'" data-t="'+key+'">'+label+'</button>';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER: CITY (VOTING)
+   ═══════════════════════════════════════════════════════════ */
+function showCity(key){
+  var city=CITIES[key]; if(!city) return;
+  var pane=document.getElementById('pane');
+  pane.innerHTML = '<div class="city-tag">'+city.name+' · '+city.videos.length+' videos</div>'+
+    city.videos.map(function(v,i){ return videoCard(v,i+1); }).join('');
+  bindRating(pane);
+}
+
+function videoCard(v,n){
+  var vt = votes[v.id]||{};
+  var sc = score(vt);
+  var done = sc!==null;
+  return '<div class="card'+(done?' is-done':'')+'" data-vid="'+v.id+'">'+
+    '<div class="card-top">'+
+      '<div class="card-num">'+n+'</div>'+
+      '<div>'+
+        '<div class="card-user">'+v.user+'</div>'+
+        (v.note?'<div class="card-note">'+v.note+'</div>':'')+
+        '<div class="card-links">'+v.links.map(function(l){
+          return '<a class="tiktok-btn" href="'+l.u+'" target="_blank" rel="noopener">'+TIKTOK+' '+l.t+'</a>';
+        }).join('')+'</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="criteria">'+CRITERIA.map(function(c){
+      var val = vt[c.key];
+      return '<div class="crit-row">'+
+        '<div class="crit-header">'+
+          '<span class="crit-name">'+c.label+'</span>'+
+          '<span><span class="crit-meta">'+Math.round(c.w*100)+'%</span><span class="crit-val">'+(val||'—')+'</span></span>'+
+        '</div>'+
+        '<div class="dots">'+[1,2,3,4,5,6,7,8,9,10].map(function(d){
+          return '<button class="dot'+(val===d?' on':'')+'" data-vid="'+v.id+'" data-c="'+c.key+'" data-n="'+d+'">'+d+'</button>';
+        }).join('')+'</div>'+
+      '</div>';
+    }).join('')+'</div>'+
+    '<div class="score-row">'+
+      '<div><div class="score-label">Puntuación ponderada</div>'+(done?'<div class="saved-tag">✓ Guardado</div>':'')+'</div>'+
+      '<div class="score-num">'+(sc!==null?sc.toFixed(2):'—')+'</div>'+
+    '</div>'+
+  '</div>';
+}
+
+function bindRating(pane){
+  pane.addEventListener('click',function(e){
+    var dot = e.target.closest('.dot'); if(!dot) return;
+    var vid=dot.dataset.vid, key=dot.dataset.c, n=parseInt(dot.dataset.n,10);
+    if(!votes[vid]) votes[vid]={};
+    // Toggle off if same value
+    if(votes[vid][key]===n){ delete votes[vid][key]; if(!Object.keys(votes[vid]).length) delete votes[vid]; }
+    else { votes[vid][key]=n; }
+    save();
+    // Re-render card in place
+    var card=pane.querySelector('[data-vid="'+vid+'"]');
+    if(card){
+      var idx = Array.from(card.parentNode.children).filter(function(c){return c.classList.contains('card');}).indexOf(card);
+      var tmp=document.createElement('div');
+      tmp.innerHTML=videoCard({id:vid,user:findVideo(vid).user,note:findVideo(vid).note,links:findVideo(vid).links},idx+1);
+      card.replaceWith(tmp.firstElementChild);
+    }
+    updateProgress();
+  });
+}
+
+function findVideo(id){
+  var all=allVideos();
+  for(var i=0;i<all.length;i++) if(all[i].id===id) return all[i];
+  return {id:id,user:'?',links:[]};
+}
+
+function updateProgress(){
+  var vids=allVideos();
+  var done=vids.filter(function(v){return votes[v.id]&&score(votes[v.id])!==null;}).length;
+  var pct=Math.round(done/vids.length*100);
+  var label=document.querySelector('.progress-label');
+  var fill=document.querySelector('.progress-fill');
+  if(label) label.textContent=done+' de '+vids.length+' evaluados ('+pct+'%)';
+  if(fill) fill.style.width=pct+'%';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER: GUIDE
+   ═══════════════════════════════════════════════════════════ */
+function showGuide(){
+  document.getElementById('pane').innerHTML =
+  '<div class="guide">'+
+
+  '<div class="g-block"><div class="g-num">1</div>'+
+  '<div class="g-heading">¿Qué estamos evaluando?</div>'+
+  '<div class="g-text">Repartidores activos de DiDi grabaron videos cortos (15–60 seg) mostrando su rutina diaria. De todos los publicados con los hashtags oficiales, se seleccionaron los de mayor interacción orgánica por cada ciudad. Tu trabajo es evaluarlos para definir al Top 3 ganador.</div></div>'+
+
+  '<div class="g-block"><div class="g-num">2</div>'+
+  '<div class="g-heading">¿Cuántos videos?</div>'+
+  '<div class="g-cards">'+
+    '<div class="g-card"><span class="g-card-icon">🟡</span><div><strong>Mérida</strong> — 7 videos</div></div>'+
+    '<div class="g-card"><span class="g-card-icon">🔵</span><div><strong>Aguascalientes</strong> — 9 videos</div></div>'+
+  '</div>'+
+  '<div class="g-text" style="margin-top:8px">16 videos en total. Cada uno dura máximo 60 seg → aprox. 20 minutos.</div></div>'+
+
+  '<div class="g-block"><div class="g-num">3</div>'+
+  '<div class="g-heading">Criterios de evaluación</div>'+
+  '<div class="g-text">Escala del 1 al 10 por criterio. Los pesos están definidos en los T&amp;C.</div>'+
+    '<div class="g-crit"><div class="g-crit-top"><strong>Originalidad</strong><span class="g-weight">40%</span></div><div class="g-crit-desc">¿Es creativo y auténtico? ¿Se siente único?</div></div>'+
+    '<div class="g-crit"><div class="g-crit-top"><strong>Mensaje Positivo</strong><span class="g-weight">40%</span></div><div class="g-crit-desc">¿Transmite una experiencia positiva y genuina?</div></div>'+
+    '<div class="g-crit"><div class="g-crit-top"><strong>Calidad Visual</strong><span class="g-weight">20%</span></div><div class="g-crit-desc">¿Se ve y escucha bien? ¿Edición limpia?</div></div>'+
+  '<div class="g-example"><div class="g-example-tag">Ejemplo</div>'+
+    'Originalidad: <strong style="color:var(--orange)">8</strong> × 0.40 = 3.20<br>'+
+    'Mensaje Positivo: <strong style="color:var(--orange)">7</strong> × 0.40 = 2.80<br>'+
+    'Calidad Visual: <strong style="color:var(--orange)">9</strong> × 0.20 = 1.80<br>'+
+    '<div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border);font-weight:700">Total = <span style="color:var(--orange)">7.80</span> / 10</div>'+
+  '</div></div>'+
+
+  '<div class="g-block"><div class="g-num">4</div>'+
+  '<div class="g-heading">Cómo votar paso a paso</div>'+
+  '<div class="g-steps">'+
+    '<div class="g-step"><span class="g-step-icon">👤</span><div><strong>Identifícate</strong><div class="g-step-desc">Selecciona tu nombre del jurado.</div></div></div>'+
+    '<div class="g-step"><span class="g-step-icon">🎬</span><div><strong>Abre el video en TikTok</strong><div class="g-step-desc">Cada video tiene un <strong>botón negro con el ícono de TikTok</strong>. Haz clic y se abre en otra pestaña. Algunos tienen variantes (Var 2, Var 3) del mismo creador.</div></div></div>'+
+    '<div class="g-step"><span class="g-step-icon">⭐</span><div><strong>Califica del 1 al 10</strong><div class="g-step-desc">Haz clic en un número para cada criterio. Para cambiar, clic en otro. Para <strong>quitar tu voto</strong>, clic en el mismo número.</div></div></div>'+
+    '<div class="g-step"><span class="g-step-icon">💾</span><div><strong>Se guarda automático</strong><div class="g-step-desc">No hay botón de enviar. Cada voto se guarda al instante en tu dispositivo.</div></div></div>'+
+    '<div class="g-step"><span class="g-step-icon">📤</span><div><strong>Comparte tu código</strong><div class="g-step-desc">Al terminar, ve a la pestaña <strong>"Compartir"</strong> y copia tu código de votos. Envíalo al grupo para consolidar el ranking.</div></div></div>'+
+  '</div></div>'+
+
+  '<div class="g-block"><div class="g-num">5</div>'+
+  '<div class="g-heading">Premios por ciudad</div>'+
+  '<div class="g-cards">'+
+    '<div class="g-card"><span class="g-card-icon">🥇</span><div><strong>1er lugar</strong> — Motocicleta Haojue DM150 2026</div></div>'+
+    '<div class="g-card"><span class="g-card-icon">🥈</span><div><strong>2do lugar</strong> — Samsung Galaxy A57 5G</div></div>'+
+    '<div class="g-card"><span class="g-card-icon">🥉</span><div><strong>3er lugar</strong> — Samsung Galaxy A57 5G</div></div>'+
+    '<div class="g-card"><span class="g-card-icon">⛽</span><div><strong>Early Bird (4–10)</strong> — Tarjeta gasolina $1,000 + Power bank</div></div>'+
+  '</div></div>'+
+
+  '<div class="g-block"><div class="g-num">6</div>'+
+  '<div class="g-heading">Desempate</div>'+
+  '<div class="g-cards">'+
+    '<div class="g-card"><span class="g-card-icon">1️⃣</span><div>Mayor puntaje en Originalidad</div></div>'+
+    '<div class="g-card"><span class="g-card-icon">2️⃣</span><div>Publicación más antigua</div></div>'+
+  '</div></div>'+
+
+  '<div class="g-block"><div class="g-num">7</div>'+
+  '<div class="g-heading">Tips</div>'+
+    '<div class="g-tip"><span style="color:var(--orange);font-weight:800">→</span> Mira todos los videos de una ciudad antes de calificar.</div>'+
+    '<div class="g-tip"><span style="color:var(--orange);font-weight:800">→</span> Usa todo el rango del 1 al 10 para mayor diferenciación.</div>'+
+    '<div class="g-tip"><span style="color:var(--orange);font-weight:800">→</span> Evalúa lo que ves, no quién lo hizo.</div>'+
+    '<div class="g-tip"><span style="color:var(--orange);font-weight:800">→</span> Si hay variantes, basa tu voto en la mejor.</div>'+
+  '</div>'+
+
+  '<button class="g-cta" id="btn-start">Comenzar a votar →</button>'+
+
+  '</div>';
+
+  document.getElementById('btn-start').onclick=function(){ tab='merida'; render(); };
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER: SYNC (EXPORT / IMPORT)
+   ═══════════════════════════════════════════════════════════ */
+function showSync(){
+  var pane = document.getElementById('pane');
+  var hasVotes = Object.keys(votes).length > 0;
+  var code = hasVotes ? 'DIDI|'+me+'|'+btoa(unescape(encodeURIComponent(JSON.stringify(votes)))) : '';
+
+  pane.innerHTML =
+  '<div class="export-section" style="border:none;padding-top:0">'+
+    '<div class="export-title">📤 Exportar mis votos</div>'+
+    '<div class="export-desc">Copia este código y envíalo al grupo (WhatsApp, Slack, etc.). El administrador lo pega en la sección de abajo para consolidar el ranking.</div>'+
+    (hasVotes
+      ? '<textarea class="import-area" id="export-code" readonly style="font-size:11px;word-break:break-all">'+code+'</textarea>'+
+        '<button class="export-btn" id="btn-copy">Copiar código al portapapeles</button>'
+      : '<div class="rank-empty">Aún no has votado ningún video.</div>')+
+  '</div>'+
+
+  '<div class="export-section">'+
+    '<div class="export-title">📥 Importar votos del equipo</div>'+
+    '<div class="export-desc">Pega aquí los códigos de los demás jurados, uno por línea. Después ve a Rankings para ver el resultado consolidado.</div>'+
+    '<textarea class="import-area" id="import-box" placeholder="Pega los códigos aquí, uno por línea..."></textarea>'+
+    '<button class="btn-orange" id="btn-import">Importar y actualizar rankings</button>'+
+  '</div>';
+
+  if(document.getElementById('btn-copy')){
+    document.getElementById('btn-copy').onclick = function(){
+      var el=document.getElementById('export-code');
+      el.select(); el.setSelectionRange(0,99999);
+      try{ navigator.clipboard.writeText(el.value); toast('✓ Código copiado'); }
+      catch(e){ document.execCommand('copy'); toast('✓ Copiado'); }
+    };
+  }
+
+  document.getElementById('btn-import').onclick = function(){
+    var raw = document.getElementById('import-box').value.trim();
+    if(!raw){ toast('Pega al menos un código'); return; }
+    var lines = raw.split('\n');
+    var count = 0;
+    lines.forEach(function(line){
+      line = line.trim();
+      if(!line || line.indexOf('DIDI|')!==0) return;
+      var parts = line.split('|');
+      if(parts.length<3) return;
+      var name = parts[1];
+      try{
+        var data = JSON.parse(decodeURIComponent(escape(atob(parts[2]))));
+        imported[name] = data;
+        count++;
+      }catch(e){}
+    });
+    // Also include current user
+    if(Object.keys(votes).length) imported[me] = votes;
+    try{ localStorage.setItem('didi_imported', JSON.stringify(imported)); }catch(e){}
+    toast('✓ '+count+' jurado'+(count!==1?'s':'')+' importado'+(count!==1?'s':''));
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER: RANKINGS
+   ═══════════════════════════════════════════════════════════ */
+function showRankings(){
+  var pane = document.getElementById('pane');
+
+  // Combine: current user + imported
+  var allData = {};
+  Object.keys(imported).forEach(function(k){ allData[k]=imported[k]; });
+  if(me && Object.keys(votes).length) allData[me]=votes;
+
+  var html = '';
+  Object.keys(CITIES).forEach(function(ck){
+    var city = CITIES[ck];
+    var rows = city.videos.map(function(v){
+      var scores=[], details=[];
+      Object.keys(allData).forEach(function(jName){
+        var jv = allData[jName][v.id];
+        if(jv){
+          var s = score(jv);
+          if(s!==null){
+            scores.push(s);
+            details.push({name:jName, o:jv.originalidad, m:jv.mensajePositivo, c:jv.calidadVisual, s:s});
+          }
+        }
+      });
+      var avg = scores.length ? scores.reduce(function(a,b){return a+b;},0)/scores.length : 0;
+      var oAvg = details.length ? details.reduce(function(a,j){return a+j.o;},0)/details.length : 0;
+      return {user:v.user, avg:avg, oAvg:oAvg, n:scores.length, details:details};
+    });
+
+    rows.sort(function(a,b){ return b.avg-a.avg || b.oAvg-a.oAvg; });
+
+    html += '<div class="rank-section">'+
+      '<div class="rank-title">'+city.name+'</div>'+
+      '<div class="rank-sub">'+city.videos.length+' videos · Ordenado por puntuación ponderada promedio</div>';
+
+    if(rows.every(function(r){return r.n===0;})){
+      html += '<div class="rank-empty">Aún no hay votos. Importa los códigos del equipo en la pestaña "Compartir".</div>';
+    } else {
+      rows.forEach(function(r,i){
+        var pos=i+1, top=pos<=3, cls=top?'rank-row top p'+pos:'rank-row';
+        var prize = pos<=3 ? PRIZES[pos] : (pos<=10?'⛽ Early Bird':'');
+        var mAvg = r.details.length ? r.details.reduce(function(a,j){return a+j.m;},0)/r.details.length : 0;
+        var cAvg = r.details.length ? r.details.reduce(function(a,j){return a+j.c;},0)/r.details.length : 0;
+
+        html += '<div class="'+cls+'">'+
+          '<div class="rank-pos">'+pos+'</div>'+
+          '<div class="rank-info">'+
+            '<div class="rank-name">'+r.user+'</div>'+
+            '<div class="rank-detail">O:'+r.oAvg.toFixed(1)+' · M:'+mAvg.toFixed(1)+' · C:'+cAvg.toFixed(1)+'</div>'+
+            (r.details.length ? '<div class="jv-detail">'+r.details.map(function(j){
+              return '<div class="jv-row"><span class="jv-who">'+j.name.split(' ')[0]+'</span><span class="jv-nums">O:'+j.o+' M:'+j.m+' C:'+j.c+'</span><span class="jv-total">'+j.s.toFixed(1)+'</span></div>';
+            }).join('')+'</div>' : '')+
+          '</div>'+
+          '<div class="rank-right">'+
+            '<div class="rank-score">'+(r.avg>0?r.avg.toFixed(2):'—')+'</div>'+
+            '<div class="rank-count">'+r.n+' voto'+(r.n!==1?'s':'')+'</div>'+
+            (prize?'<div class="rank-prize">'+prize+'</div>':'')+
+          '</div>'+
+        '</div>';
+      });
+    }
+    html += '</div>';
+  });
+
+  pane.innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BOOT
+   ═══════════════════════════════════════════════════════════ */
+(function boot(){
+  loadImported();
+  try{
+    var saved = localStorage.getItem('didi_juror');
+    if(saved && JURORS.indexOf(saved)!==-1){
+      me = saved;
+      load();
+      // Add own votes to imported for rankings
+      if(Object.keys(votes).length) imported[me]=votes;
+      render();
+      return;
+    }
+  }catch(e){}
+  showLogin();
+})();
+</script>
+
+</body>
+</html>
