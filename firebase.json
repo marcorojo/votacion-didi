@@ -3,8 +3,13 @@
     "public": ".",
     "ignore": [
       "firebase.json",
-      "**/node_modules/**"
+      ".firebaserc",
+      "README.md",
+      "**/node_modules/**",
+      ".github/**"
     ],
+    "cleanUrls": true,
+    "trailingSlash": false,
     "headers": [
       {
         "source": "**",
